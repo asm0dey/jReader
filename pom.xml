@@ -30,6 +30,16 @@
             <id>EclipseLink</id>
             <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
         </repository>
+        <repository>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+                <enabled>true</enabled>
+            </releases>
+            <id>yarfraw</id>
+            <name>yarfraw repo</name>
+            <url>http://www.cs.drexel.edu/~zl25/maven2/repo</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -62,11 +72,6 @@
             <version>1.0.0.GA</version>
             <classifier>sources</classifier>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>rome</groupId>
-            <artifactId>rome</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.restlet</groupId>
@@ -119,6 +124,12 @@
             <artifactId>eclipselink</artifactId>
             <version>2.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>yarfraw</groupId>
+            <artifactId>yarfraw</artifactId>
+            <version>0.92</version>
+        </dependency>
+
     </dependencies>
 
     <build>
