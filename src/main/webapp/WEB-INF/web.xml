@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
+        PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
 
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.github.asm0dey.server.GreetingServiceImpl</servlet-class>
-  </servlet>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/spring-config.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>springGwtRemoteServiceServlet</servlet-name>
+        <servlet-class>org.spring4gwt.server.SpringGwtRemoteServiceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springGwtRemoteServiceServlet</servlet-name>
+        <url-pattern>/gwtapp/springGwtServices/*</url-pattern>
+    </servlet-mapping>
 
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/gwtapp/greet</url-pattern>
-  </servlet-mapping>
 
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>gwtapp.html</welcome-file>
-  </welcome-file-list>
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>gwtapp.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>
