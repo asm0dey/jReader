@@ -1,5 +1,8 @@
 package com.github.asm0dey.shared.domain;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -18,6 +21,7 @@ import java.util.List;
 public class FeedGroup extends AbstractPojo {
 	@Column( nullable = false )
 	@ManyToMany( targetEntity = Feed.class, mappedBy = "feedGroups" )
+	@Cascade( CascadeType.SAVE_UPDATE )
 	private List<Feed> feeds;
 	@Column( nullable = false )
 	private String name;
@@ -82,4 +86,5 @@ public class FeedGroup extends AbstractPojo {
 
 	public FeedGroup() {
 	}
+
 }

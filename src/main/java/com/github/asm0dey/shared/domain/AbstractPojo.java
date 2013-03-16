@@ -55,4 +55,12 @@ public abstract class AbstractPojo implements IsSerializable {
 		result = 31 * result + (int) ( id ^ ( id >>> 32 ) );
 		return result;
 	}
+
+    @Override
+    public String toString() {
+        return "AbstractPojo{" +
+                "consistencyVersion=" + consistencyVersion +
+                ", id=" + id +
+                '}';
+    }
 }

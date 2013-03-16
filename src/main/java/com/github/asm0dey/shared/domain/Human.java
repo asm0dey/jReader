@@ -1,5 +1,8 @@
 package com.github.asm0dey.shared.domain;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,8 +26,9 @@ public class Human extends AbstractPojo {
 	@Column( nullable = false )
 	private boolean isActive;
 	private int loginAttempts;
-	@OneToMany( targetEntity = FeedGroup.class, mappedBy = "human" )
+	@OneToMany( targetEntity = FeedGroup.class, mappedBy = "human", orphanRemoval = true )
 	@Column( nullable = false )
+	@Cascade( value = { CascadeType.SAVE_UPDATE } )
 	private List<FeedGroup> subscribedFeeds;
 
 	public Human( String email, String passwordHash, boolean active, int loginAttempts, List<FeedGroup> subscribedFeeds ) {
@@ -88,4 +92,33 @@ public class Human extends AbstractPojo {
 		return "Human{" + "email='" + email + '\'' + ", passwordHash='" + passwordHash + '\'' + ", isActive=" + isActive + ", loginAttempts="
 				+ loginAttempts + ", subscribedFeeds=" + subscribedFeeds + '}';
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Human)) return false;
+        if (!super.equals(o)) return false;
+
+        Human human = (Human) o;
+
+        if (isActive != human.isActive) return false;
+        if (loginAttempts != human.loginAttempts) return false;
+        if (!email.equals(human.email)) return false;
+        if (!passwordHash.equals(human.passwordHash)) return false;
+        if (subscribedFeeds != null ? !subscribedFeeds.equals(human.subscribedFeeds) : human.subscribedFeeds != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + passwordHash.hashCode();
+        result = 31 * result + (isActive ? 1 : 0);
+        result = 31 * result + loginAttempts;
+        result = 31 * result + (subscribedFeeds != null ? subscribedFeeds.hashCode() : 0);
+        return result;
+    }
 }

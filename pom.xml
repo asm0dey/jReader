@@ -217,6 +217,12 @@
             <artifactId>dozer</artifactId>
             <version>5.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

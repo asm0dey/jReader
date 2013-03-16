@@ -6,6 +6,8 @@
         <class>com.github.asm0dey.shared.domain.Human</class>
         <class>com.github.asm0dey.shared.domain.Feed</class>
         <class>com.github.asm0dey.shared.domain.FeedGroup</class>
+        <class>com.github.asm0dey.shared.domain.FeedItem</class>
+        <class>com.github.asm0dey.shared.domain.Author</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:postgresql://localhost/jreader"/>

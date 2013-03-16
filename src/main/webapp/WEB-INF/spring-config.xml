@@ -7,7 +7,7 @@
     <context:annotation-config/>
 
     <context:component-scan base-package="com.github.asm0dey.server"/>
-    <bean class="org.dozer.DozerBeanMapper" id="mapper"/>
+    <bean class="org.dozer.DozerBeanMapper" id="mapper" scope="singleton"/>
     <bean class="com.github.asm0dey.server.services.MappingUtil"/>
     <jpa:repositories base-package="com.github.asm0dey.server.dao.repositories"/>
     <bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" id="entityManagerFactory">
