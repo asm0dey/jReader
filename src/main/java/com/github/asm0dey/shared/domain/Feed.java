@@ -21,6 +21,8 @@ public class Feed extends AbstractPojo {
 	private Date lastUpdateDate;
 	@ManyToMany
 	private Collection<FeedGroup> feedGroups;
+	@OneToMany( mappedBy = "feed", targetEntity = FeedItem.class )
+	private List<FeedItem> items;
 
 	public Feed() {
 	}
@@ -59,9 +61,6 @@ public class Feed extends AbstractPojo {
 		return "Feed{" + "feedGroups=" + feedGroups + ", url='" + url + '\'' + ", lastUpdateDate=" + lastUpdateDate + ", id=" + getId() + '}';
 	}
 
-	@OneToMany( mappedBy = "feed", targetEntity = FeedItem.class )
-	private List<FeedItem> items;
-
 	public List<FeedItem> getItems() {
 		return items;
 	}
@@ -70,29 +69,35 @@ public class Feed extends AbstractPojo {
 		this.items = items;
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Feed)) return false;
-        if (!super.equals(o)) return false;
+	@Override
+	public boolean equals( Object o ) {
+		if ( this == o )
+			return true;
+		if ( !( o instanceof Feed ) )
+			return false;
+		if ( !super.equals( o ) )
+			return false;
 
-        Feed feed = (Feed) o;
+		Feed feed = (Feed) o;
 
-        if (feedGroups != null ? !feedGroups.equals(feed.feedGroups) : feed.feedGroups != null) return false;
-        if (!items.equals(feed.items)) return false;
-        if (lastUpdateDate != null ? !lastUpdateDate.equals(feed.lastUpdateDate) : feed.lastUpdateDate != null)
-            return false;
-        if (!url.equals(feed.url)) return false;
+		if ( feedGroups != null ? !feedGroups.equals( feed.feedGroups ) : feed.feedGroups != null )
+			return false;
+		if ( !items.equals( feed.items ) )
+			return false;
+		if ( lastUpdateDate != null ? !lastUpdateDate.equals( feed.lastUpdateDate ) : feed.lastUpdateDate != null )
+			return false;
+		if ( !url.equals( feed.url ) )
+			return false;
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
+	@Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + url.hashCode();
         result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
         result = 31 * result + (feedGroups != null ? feedGroups.hashCode() : 0);
-`        return result;
+        return result;
     }
 }

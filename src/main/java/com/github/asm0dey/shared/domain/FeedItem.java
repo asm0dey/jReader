@@ -20,7 +20,7 @@ public class FeedItem extends AbstractPojo {
 	private Date createdOn;
 	@ManyToOne( optional = false, fetch = FetchType.EAGER )
 	private Feed feed;
-	@ManyToMany( fetch = FetchType.EAGER )
+	@ManyToMany( fetch = FetchType.EAGER)
 	private Collection<Author> authors;
 
 	public String getTitle() {
