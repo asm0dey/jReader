@@ -9,6 +9,7 @@
     <context:component-scan base-package="com.github.asm0dey.server"/>
     <bean class="org.dozer.DozerBeanMapper" id="mapper" scope="singleton"/>
     <bean class="com.github.asm0dey.server.services.MappingUtil"/>
+    <bean class="org.horrabin.horrorss.RssParser"/>
     <jpa:repositories base-package="com.github.asm0dey.server.dao.repositories"/>
     <bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" id="entityManagerFactory">
         <property name="persistenceUnitName" value="postgres"/>

@@ -6,44 +6,53 @@
 <!-- differences in layout.                        -->
 
 <html>
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-    <!--                                                               -->
-    <!-- Consider inlining CSS to reduce the number of requested files -->
-    <!--                                                               -->
-    <link type="text/css" rel="stylesheet" href="gwtapp.css">
+        <!--                                                               -->
+        <!-- Consider inlining CSS to reduce the number of requested files -->
+        <!--                                                               -->
+        <link type="text/css" rel="stylesheet" href="gwtapp.css">
 
-    <!--                                           -->
-    <!-- Any title is fine                         -->
-    <!--                                           -->
-    <title>gwtReader</title>
+        <!--                                           -->
+        <!-- Any title is fine                         -->
+        <!--                                           -->
+        <title>gwtReader</title>
 
-    <!--                                           -->
-    <!-- This script loads your compiled module.   -->
-    <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
-    <!--                                           -->
-    <script type="text/javascript" language="javascript" src="gwtapp/gwtapp.nocache.js"></script>
-</head>
+        <!--                                           -->
+        <!-- This script loads your compiled module.   -->
+        <!-- If you add any GWT meta tags, they must   -->
+        <!-- be added before this line.                -->
+        <!--
+        <!-- before your module(*.nocache.js) loading  -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <!--[if IE 7]>
+        <link rel="stylesheet" href="gwtapp/css/font-awesome-ie7.css">
+        <![endif]-->
+        <!-- your module(*.nocache.js) loading  -->
+        -->
+        <script type="text/javascript" language="javascript" src="gwtapp/gwtapp.nocache.js"></script>
+    </head>
 
 <!--                                           -->
 <!-- The body can have arbitrary html, or      -->
 <!-- you can leave the body empty if you want  -->
 <!-- to create a completely dynamic UI.        -->
 <!--                                           -->
-<body>
+    <body>
 
-<!-- OPTIONAL: include this if you want history support -->
-<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
-        style="position:absolute;width:0;height:0;border:0"></iframe>
+    <!-- OPTIONAL: include this if you want history support -->
+        <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+                style="position:absolute;width:0;height:0;border:0"></iframe>
 
-<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
-<noscript>
-    <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-        Your web browser must have JavaScript enabled
-        in order for this application to display correctly.
-    </div>
-</noscript>
-</body>
+    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+        <noscript>
+            <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+                Your web browser must have JavaScript enabled
+                in order for this application to display correctly.
+            </div>
+        </noscript>
+    </body>
 </html>

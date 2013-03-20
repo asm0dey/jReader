@@ -3,7 +3,9 @@ package com.github.asm0dey.shared.domain;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Human: finkel
@@ -19,10 +21,11 @@ public class Feed extends AbstractPojo {
 	@Column( nullable = false )
 	private String url;
 	private Date lastUpdateDate;
-	@ManyToMany
-	private Collection<FeedGroup> feedGroups;
-	@OneToMany( mappedBy = "feed", targetEntity = FeedItem.class )
-	private List<FeedItem> items;
+	@OneToMany(mappedBy = "feed",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	private Set<FeedItem> items;
+	private String title;
+	private String charset;
+	private String imageUrl;
 
 	public Feed() {
 	}
@@ -48,7 +51,7 @@ public class Feed extends AbstractPojo {
 		this.url = url;
 	}
 
-	public Collection<FeedGroup> getFeedGroups() {
+/*	public Collection<FeedGroup> getFeedGroups() {
 		return feedGroups;
 	}
 
@@ -59,45 +62,37 @@ public class Feed extends AbstractPojo {
 	@Override
 	public String toString() {
 		return "Feed{" + "feedGroups=" + feedGroups + ", url='" + url + '\'' + ", lastUpdateDate=" + lastUpdateDate + ", id=" + getId() + '}';
-	}
+	}*/
 
-	public List<FeedItem> getItems() {
+	public Set<FeedItem> getItems() {
 		return items;
 	}
 
-	public void setItems( List<FeedItem> items ) {
+	public void setItems( Set<FeedItem> items ) {
 		this.items = items;
 	}
 
-	@Override
-	public boolean equals( Object o ) {
-		if ( this == o )
-			return true;
-		if ( !( o instanceof Feed ) )
-			return false;
-		if ( !super.equals( o ) )
-			return false;
-
-		Feed feed = (Feed) o;
-
-		if ( feedGroups != null ? !feedGroups.equals( feed.feedGroups ) : feed.feedGroups != null )
-			return false;
-		if ( !items.equals( feed.items ) )
-			return false;
-		if ( lastUpdateDate != null ? !lastUpdateDate.equals( feed.lastUpdateDate ) : feed.lastUpdateDate != null )
-			return false;
-		if ( !url.equals( feed.url ) )
-			return false;
-
-		return true;
+	public String getTitle() {
+		return title;
 	}
 
-	@Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + url.hashCode();
-        result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
-        result = 31 * result + (feedGroups != null ? feedGroups.hashCode() : 0);
-        return result;
-    }
+	public void setTitle( String title ) {
+		this.title = title;
+	}
+
+	public String getCharset() {
+		return charset;
+	}
+
+	public void setCharset( String charset ) {
+		this.charset = charset;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl( String imageUrl ) {
+		this.imageUrl = imageUrl;
+	}
 }

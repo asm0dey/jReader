@@ -139,6 +139,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.gwt.inject</groupId>
+            <artifactId>gin</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>4.2.0.CR2</version>
@@ -224,9 +229,24 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-feedparser</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>net.sf</groupId>
+            <artifactId>sparta-xml</artifactId>
+            <version>20031101</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode</groupId>
+            <artifactId>horrorss</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava-gwt</artifactId>
+            <version>14.0.1</version>
         </dependency>
     </dependencies>
 

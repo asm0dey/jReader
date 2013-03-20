@@ -1,0 +1,15 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+    <g:HTMLPanel>
+        <b:FluidRow>
+            <b:Column size="4" offset="4">
+                    <b:WellForm type="VERTICAL">
+                        <b:TextBox placeholder="Email:" ui:field="emailField"/>
+                        <b:PasswordTextBox placeholder="Password:" ui:field="passwordField"/>
+                        <b:Button type="PRIMARY" block="true" ui:field="signUpIn">Sign Up/In</b:Button>
+                    </b:WellForm>
+            </b:Column>
+        </b:FluidRow>
+    </g:HTMLPanel>
+</ui:UiBinder>

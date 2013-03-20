@@ -4,24 +4,33 @@ import com.github.asm0dey.client.services.FeedService;
 import com.github.asm0dey.server.dao.repositories.AuthorRepository;
 import com.github.asm0dey.server.dao.repositories.FeedItemRepository;
 import com.github.asm0dey.server.dao.repositories.FeedRepository;
-import com.github.asm0dey.shared.domain.Author;
 import com.github.asm0dey.shared.domain.Feed;
 import com.github.asm0dey.shared.domain.FeedItem;
-import org.apache.commons.httpclient.HttpURL;
+import org.dozer.Mapper;
+import org.horrabin.horrorss.RssFeed;
+import org.horrabin.horrorss.RssItemBean;
+import org.horrabin.horrorss.RssParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import yarfraw.core.datamodel.ChannelFeed;
-import yarfraw.core.datamodel.ItemEntry;
-import yarfraw.core.datamodel.Person;
-import yarfraw.core.datamodel.YarfrawException;
-import yarfraw.io.CachedFeedReader;
-import yarfraw.io.FeedReader;
+import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * User: finkel
@@ -32,7 +41,8 @@ import java.util.Map;
  */
 @Service( "feedService" )
 public class FeedServiceImpl implements FeedService {
-	private static final Map<String, FeedReader> READER_MAP = new HashMap<String, FeedReader>();
+	private static final Map<String, RssParser> PARSERS = newHashMap();
+	private static final Map<String, String> ENCODINGS = newHashMap();
 	@Autowired
 	FeedRepository feedRepository;
 	@Autowired
@@ -41,62 +51,92 @@ public class FeedServiceImpl implements FeedService {
 	FeedItemRepository feedItemRepository;
 	@Autowired
 	MappingUtil mappingUtil;
+	@Autowired
+	Mapper mapper;
 
-	@Override
-	public List<FeedItem> listItems( Feed feed ) {
-		if ( feed.getId() == null ) {
-			try {
-				Feed savedFeed = feedRepository.saveAndFlush( feed );
-				ChannelFeed channelFeed = getReader( feed.getUrl() ).readChannel();
-				List<ItemEntry> channelItems = channelFeed.getItems();
-				List<FeedItem> feedItems = new ArrayList<FeedItem>();
-				for ( ItemEntry channelItem : channelItems ) {
-					FeedItem item = new FeedItem();
-					List<Person> authorOrCreator = channelItem.getAuthorOrCreator();
-					if ( authorOrCreator != null ) {
-						List<Author> authors = new ArrayList<Author>( authorOrCreator.size() );
-						for ( Person person : authorOrCreator ) {
-							Author author = new Author();
-							author.setName( person.getName() );
-							authors.add( author );
-						}
-						authorRepository.save( authors );
-					}
-					item.setTitle( channelItem.getTitleText() );
-					System.out.println( channelItem.getPubDate() );
-// item.setCreatedOn( Date.valueOf( channelItem.getPubDate() ) );
-					item.setText( channelItem.getDescriptionOrSummaryText() );
-					item.setFeed( savedFeed );
-					feedItems.add( item );
-				}
-				List<FeedItem> savedItems = feedItemRepository.save( feedItems );
-				List<FeedItem> items = savedFeed.getItems();
-				if ( items == null )
-					savedFeed.setItems( savedItems );
-				else
-					items.addAll( savedItems );
-				savedFeed = feedRepository.saveAndFlush( savedFeed );
-				return mappingUtil.remapCollection( savedItems, FeedItem.class );
-			} catch ( YarfrawException e ) {
-				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
-			}
-		} else {
-			return mappingUtil.remapCollection( feedRepository.findOne( feed.getId() ).getItems(), FeedItem.class );
-		}
-		return null;
+	private Feed generateFeedByURL( String url, RssParser parser ) throws Exception {
+		RssFeed load = parser.load();
+		Feed foundFeed = new Feed();
+		foundFeed.setTitle( load.getChannel().getTitle() );
+		foundFeed.setUrl( url );
+		foundFeed.setLastUpdateDate( new Date() );
+		foundFeed.setCharset( ENCODINGS.get( url ) );
+		foundFeed.setImageUrl( load.getImage().getUrl() );
+		foundFeed = feedRepository.save( foundFeed );
+
+		return foundFeed;
 	}
 
-	private FeedReader getReader( String url ) {
-		FeedReader feedReader = READER_MAP.get( url );
-		if ( feedReader == null ) {
+	private String detectEncoding( String url ) throws ParserConfigurationException, IOException, SAXException {
+		InputStream inputStream = new BufferedInputStream( new URL( url ).openStream() );
+		Document parse = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse( inputStream );
+		try {
+			return parse.getXmlEncoding();
+		} finally {
+			inputStream.close();
+		}
+	}
+
+	private RssParser getParser( String url ) throws IOException, SAXException, ParserConfigurationException {
+		RssParser parser = PARSERS.get( url );
+		if ( parser == null ) {
+			parser = new RssParser( url );
+			String charset = detectEncoding( url );
+			parser.setCharset( charset );
+			PARSERS.put( url, parser );
+			ENCODINGS.put( url, charset );
+		}
+		return parser;
+	}
+
+	@Transactional
+	@Override
+	public List<FeedItem> listItems( String url, final int pageNum ) {
+		Feed foundFeed = feedRepository.findByUrl( url );
+		if ( foundFeed != null ) {
+			List<FeedItem> items = feedItemRepository.findByFeed_IdOrderByCreatedOnDesc( foundFeed.getId(), new Pageable() {
+				@Override
+				public int getPageNumber() {
+					return pageNum; // To change body of implemented methods use File | Settings | File Templates.
+				}
+
+				@Override
+				public int getPageSize() {
+					return 30; // To change body of implemented methods use File | Settings | File Templates.
+				}
+
+				@Override
+				public int getOffset() {
+					return 0; // To change body of implemented methods use File | Settings | File Templates.
+				}
+
+				@Override
+				public Sort getSort() {
+					return null; // To change body of implemented methods use File | Settings | File Templates.
+				}
+			} );
+			return mapper.map( items, List.class );
+		} else {
 			try {
-				READER_MAP.put( url, new CachedFeedReader( new HttpURL( url ) ) );
-			} catch ( YarfrawException e ) {
-				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
-			} catch ( IOException e ) {
+				RssParser parser = getParser( url );
+				foundFeed = generateFeedByURL( url, parser );
+				List<FeedItem> items = newArrayList();
+				if ( foundFeed.getItems() == null )
+					foundFeed.setItems( newHashSet( items ) );
+				for ( RssItemBean rssItemBean : parser.load().getItems() ) {
+					FeedItem feedItem = new FeedItem( rssItemBean.getPubDate(), rssItemBean.getDescription(), rssItemBean.getTitle(),
+							rssItemBean.getLink() );
+					feedItem.setAuthor( rssItemBean.getAuthor() );
+                    feedItem.setFeed(foundFeed);
+                    items.add(feedItem);
+				}
+                items=feedItemRepository.save(items);
+				return mapper.map( items, List.class );
+			} catch ( Exception e ) {
 				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
 			}
+
 		}
-		return READER_MAP.get( url );
+		return null;
 	}
 }

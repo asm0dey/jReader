@@ -14,8 +14,7 @@ import javax.persistence.*;
 @MappedSuperclass
 public abstract class AbstractPojo implements IsSerializable {
 	@Version
-	int consistencyVersion;
-
+	Short consistencyVersion;
 	@Id
 	@GeneratedValue( strategy = GenerationType.AUTO )
 	private Long id;
@@ -32,7 +31,7 @@ public abstract class AbstractPojo implements IsSerializable {
 		return consistencyVersion;
 	}
 
-	public void setConsistencyVersion( int consistencyVersion ) {
+	public void setConsistencyVersion( Short consistencyVersion ) {
 		this.consistencyVersion = consistencyVersion;
 	}
 
@@ -44,23 +43,15 @@ public abstract class AbstractPojo implements IsSerializable {
 			return false;
 
 		AbstractPojo that = (AbstractPojo) o;
-
-		return consistencyVersion == that.consistencyVersion && id == that.id;
+		return !( consistencyVersion != null ? !consistencyVersion.equals( that.consistencyVersion ) : that.consistencyVersion != null )
+				&& !( id != null ? !id.equals( that.id ) : that.id != null );
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = consistencyVersion;
-		result = 31 * result + (int) ( id ^ ( id >>> 32 ) );
+		int result = consistencyVersion != null ? consistencyVersion.hashCode() : 0;
+		result = 31 * result + ( id != null ? id.hashCode() : 0 );
 		return result;
 	}
-
-    @Override
-    public String toString() {
-        return "AbstractPojo{" +
-                "consistencyVersion=" + consistencyVersion +
-                ", id=" + id +
-                '}';
-    }
 }

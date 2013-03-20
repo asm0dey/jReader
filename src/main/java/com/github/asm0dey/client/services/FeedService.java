@@ -16,5 +16,5 @@ import java.util.List;
  */
 @RemoteServiceRelativePath( "springGwtServices/feedService" )
 public interface FeedService extends RemoteService {
-	public List<FeedItem> listItems( Feed feed );
+	public List<FeedItem> listItems( String url,int pageNum );
 }

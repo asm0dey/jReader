@@ -1,7 +1,8 @@
 package com.github.asm0dey.shared.domain;
 
+import org.hibernate.annotations.Index;
+
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -13,15 +14,26 @@ import java.util.Date;
  */
 @Entity
 public class FeedItem extends AbstractPojo {
-	@Lob
-    private String title;
-    @Lob
+	@Column( length = 2000 )
+	@Index( name = "item_title_index" )
+	private String title;
+	@Column(length = 32000)
 	private String text;
+	@Index( name = "item_date_index" )
 	private Date createdOn;
-	@ManyToOne( optional = false, fetch = FetchType.EAGER )
-	private Feed feed;
-	@ManyToMany( fetch = FetchType.EAGER)
-	private Collection<Author> authors;
+	private String author;
+	@Index( name = "item_url" )
+	private String url;
+
+	public FeedItem( Date createdOn, String text, String title, String url ) {
+		this.createdOn = createdOn;
+		this.text = text;
+		this.title = title;
+		this.url = url;
+	}
+
+	public FeedItem() {
+	}
 
 	public String getTitle() {
 		return title;
@@ -47,47 +59,30 @@ public class FeedItem extends AbstractPojo {
 		this.createdOn = createdOn;
 	}
 
-	public Feed getFeed() {
-		return feed;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setFeed( Feed feed ) {
-		this.feed = feed;
+	public void setUrl( String url ) {
+		this.url = url;
 	}
 
-	public Collection<Author> getAuthors() {
-		return authors;
+	public String getAuthor() {
+		return author;
 	}
 
-	public void setAuthors( Collection<Author> authors ) {
-		this.authors = authors;
+	public void setAuthor( String author ) {
+		this.author = author;
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    @ManyToOne(optional = false)
+    private Feed feed;
 
-        FeedItem item = (FeedItem) o;
-
-        if (authors != null ? !authors.equals(item.authors) : item.authors != null) return false;
-        if (createdOn != null ? !createdOn.equals(item.createdOn) : item.createdOn != null) return false;
-        if (!feed.equals(item.feed)) return false;
-        if (!text.equals(item.text)) return false;
-        if (!title.equals(item.title)) return false;
-
-        return true;
+    public Feed getFeed() {
+        return feed;
     }
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + title.hashCode();
-        result = 31 * result + text.hashCode();
-        result = 31 * result + (createdOn != null ? createdOn.hashCode() : 0);
-        result = 31 * result + feed.hashCode();
-        result = 31 * result + (authors != null ? authors.hashCode() : 0);
-        return result;
+    public void setFeed(Feed feed) {
+        this.feed = feed;
     }
 }

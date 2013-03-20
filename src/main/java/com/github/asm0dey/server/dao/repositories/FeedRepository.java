@@ -11,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 17:38
  */
 public interface FeedRepository extends JpaRepository<Feed, Long> {
+    public Feed findByUrl(String url);
 }

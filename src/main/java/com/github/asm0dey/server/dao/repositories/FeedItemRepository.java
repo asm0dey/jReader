@@ -1,7 +1,13 @@
 package com.github.asm0dey.server.dao.repositories;
 
+import com.github.asm0dey.shared.domain.Feed;
 import com.github.asm0dey.shared.domain.FeedItem;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * User: finkel
@@ -11,4 +17,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 17:52
  */
 public interface FeedItemRepository extends JpaRepository<FeedItem, Long> {
+    @Transactional
+    public List<FeedItem> findByFeed_IdOrderByCreatedOnDesc(Long feed_Id,Pageable pageable);
 }
