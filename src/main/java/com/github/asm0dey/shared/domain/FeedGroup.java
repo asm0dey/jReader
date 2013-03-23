@@ -48,4 +48,14 @@ public class FeedGroup extends AbstractPojo {
 	public FeedGroup() {
 	}
 
+    @ManyToOne(optional = false)
+    private Human owner;
+
+    public Human getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Human owner) {
+        this.owner = owner;
+    }
 }

@@ -3,6 +3,7 @@ package com.github.asm0dey.shared.domain;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 /**

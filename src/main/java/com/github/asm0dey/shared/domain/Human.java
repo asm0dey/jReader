@@ -1,13 +1,13 @@
 package com.github.asm0dey.shared.domain;
 
+import com.google.common.collect.Lists;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Human: finkel
@@ -26,17 +26,33 @@ public class Human extends AbstractPojo {
 	@Column( nullable = false )
 	private boolean isActive;
 	private int loginAttempts;
-	@OneToMany( orphanRemoval = true )
+	@OneToMany( orphanRemoval = true, mappedBy = "owner" )
 	@Column( nullable = false )
 	@Cascade( value = { CascadeType.SAVE_UPDATE } )
-	private List<FeedGroup> subscribedFeeds;
+	private List<FeedGroup> categories;
+	@ManyToMany
+	private List<FeedItem> readItems;
+	@ManyToMany
+	private List<FeedItem> starredItems;
 
-	public Human( String email, String passwordHash, boolean active, int loginAttempts, List<FeedGroup> subscribedFeeds ) {
+	public Human( String email, String passwordHash ) {
+		this( email, passwordHash, newArrayList( new FeedGroup( Lists.<Feed> newArrayList(), "Default" ) ) );
+	}
+
+	public Human( String email, String passwordHash, List<FeedGroup> categories ) {
+		this( email, passwordHash, true, categories );
+	}
+
+	public Human( String email, String passwordHash, boolean active, List<FeedGroup> categories ) {
+		this( email, passwordHash, active, 0, categories );
+	}
+
+	public Human( String email, String passwordHash, boolean active, int loginAttempts, List<FeedGroup> categories ) {
 		this.email = email;
 		this.passwordHash = passwordHash;
 		isActive = active;
 		this.loginAttempts = loginAttempts;
-		this.subscribedFeeds = subscribedFeeds;
+		this.categories = categories;
 	}
 
 	public Human() {
@@ -78,18 +94,28 @@ public class Human extends AbstractPojo {
 		return this;
 	}
 
-	public List<FeedGroup> getSubscribedFeeds() {
-		return subscribedFeeds;
+	public List<FeedGroup> getCategories() {
+		return categories;
 	}
 
-	public Human setSubscribedFeeds( List<FeedGroup> subscribedFeeds ) {
-		this.subscribedFeeds = subscribedFeeds;
+	public Human setCategories( List<FeedGroup> subscribedFeeds ) {
+		this.categories = subscribedFeeds;
 		return this;
 	}
 
-	@Override
-	public String toString() {
-		return "Human{" + "email='" + email + '\'' + ", passwordHash='" + passwordHash + '\'' + ", isActive=" + isActive + ", loginAttempts="
-				+ loginAttempts + ", subscribedFeeds=" + subscribedFeeds + '}';
+	public List<FeedItem> getReadItems() {
+		return readItems;
+	}
+
+	public void setReadItems( List<FeedItem> readItems ) {
+		this.readItems = readItems;
+	}
+
+	public List<FeedItem> getStarredItems() {
+		return starredItems;
+	}
+
+	public void setStarredItems( List<FeedItem> starredItems ) {
+		this.starredItems = starredItems;
 	}
 }

@@ -17,6 +17,6 @@ import java.util.List;
  * Time: 17:52
  */
 public interface FeedItemRepository extends JpaRepository<FeedItem, Long> {
-    @Transactional
     public List<FeedItem> findByFeed_IdOrderByCreatedOnDesc(Long feed_Id,Pageable pageable);
+
 }

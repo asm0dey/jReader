@@ -7,7 +7,6 @@
         <class>com.github.asm0dey.shared.domain.Feed</class>
         <class>com.github.asm0dey.shared.domain.FeedGroup</class>
         <class>com.github.asm0dey.shared.domain.FeedItem</class>
-        <class>com.github.asm0dey.shared.domain.Author</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:postgresql://localhost/jreader"/>
@@ -19,6 +18,13 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+
+            <property name="hibernate.c3p0.min_size" value="2" />
+            <property name="hibernate.c3p0.max_size" value="5" />
+            <property name="hibernate.c3p0.timeout" value="600" />
+            <property name="hibernate.c3p0.max_statements" value="0" />
+            <property name="hibernate.c3p0.idle_test_period" value="300"/>
+            <property name="hibernate.c3p0.acquire_increment" value="1" />
         </properties>
     </persistence-unit>
 </persistence>

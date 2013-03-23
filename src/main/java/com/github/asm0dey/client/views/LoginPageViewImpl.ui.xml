@@ -1,0 +1,46 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+    <ui:style>
+        .block {
+            text-align: center;
+        }
+
+        .block:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -0.25em; /* Adjusts for spacing */
+
+            /* For visualization
+            background: #808080; width: 5px;
+            */
+        }
+
+        .centered {
+            display: inline-block;
+            vertical-align: middle;
+            width: 300px;
+            padding: 10px 15px;
+            border: #a0a0a0 solid 1px;
+            background: #f5f5f5;
+        }
+    </ui:style>
+
+    <g:HTMLPanel>
+        <div class="{style.block}" style="height: 100%">
+
+            <div class="{style.centered}">
+                <g:VerticalPanel>
+                    <b:TextBox placeholder="Email:" ui:field="emailField"/>
+                    <b:PasswordTextBox placeholder="Password:" ui:field="passwordField"/>
+                    <g:cell horizontalAlignment="center">
+                        <b:Button type="PRIMARY" ui:field="signUpIn">Sign Up/In</b:Button>
+                    </g:cell>
+                </g:VerticalPanel>
+            </div>
+
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>

@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+    <g:HTMLPanel>
+        <b:FluidContainer>
+            <b:FluidRow height="100%">
+                <b:Column size="3">
+                    <b:Accordion width="100%" ui:field="accordion"/>
+                </b:Column>
+            </b:FluidRow>
+        </b:FluidContainer>
+    </g:HTMLPanel>
+</ui:UiBinder>

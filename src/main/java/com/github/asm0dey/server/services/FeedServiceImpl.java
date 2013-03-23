@@ -1,7 +1,6 @@
 package com.github.asm0dey.server.services;
 
 import com.github.asm0dey.client.services.FeedService;
-import com.github.asm0dey.server.dao.repositories.AuthorRepository;
 import com.github.asm0dey.server.dao.repositories.FeedItemRepository;
 import com.github.asm0dey.server.dao.repositories.FeedRepository;
 import com.github.asm0dey.shared.domain.Feed;
@@ -46,11 +45,7 @@ public class FeedServiceImpl implements FeedService {
 	@Autowired
 	FeedRepository feedRepository;
 	@Autowired
-	AuthorRepository authorRepository;
-	@Autowired
 	FeedItemRepository feedItemRepository;
-	@Autowired
-	MappingUtil mappingUtil;
 	@Autowired
 	Mapper mapper;
 

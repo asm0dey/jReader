@@ -12,6 +12,9 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>com.github.asm0dey.server.ApplicationServletContextListener</listener-class>
+    </listener>
     <servlet>
         <servlet-name>springGwtRemoteServiceServlet</servlet-name>
         <servlet-class>org.spring4gwt.server.SpringGwtRemoteServiceServlet</servlet-class>
