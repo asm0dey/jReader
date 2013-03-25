@@ -9,8 +9,7 @@ import com.github.asm0dey.shared.domain.Exception.CreateUserException;
 import com.github.asm0dey.shared.domain.FeedGroup;
 import com.github.asm0dey.shared.domain.FeedItem;
 import com.github.asm0dey.shared.domain.Human;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.dozer.Mapper;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,26 +94,49 @@ public class HumanServiceImpl implements HumanService {
     }
 
     @Override
-    public Map<String,Long> listUserFeedGroups(Long userId) {
+    public Map<String,Long> listUserFeedGroupIds(Long userId) {
         Human human = humanRepository.findOne(userId);
-        List<FeedGroup> source = humanRepository.listFeedGroups(userId);
         final Map<String,Long> map = newHashMap();
-        for (FeedGroup feedGroup : source) {
-            map.put(feedGroup.getName(),feedGroup.getId());
+        for (Map.Entry<String, FeedGroup> stringFeedGroupEntry : human.getCategories().entrySet()) {
+            map.put(stringFeedGroupEntry.getKey(),stringFeedGroupEntry.getValue().getId());
         }
         return map;
     }
 
+    @Override
+    public Map<String, FeedGroup> listUserFeedGroups(Long userId) {
+        Human found = humanRepository.findOne(userId);
+        return listUserFeedGroups(found);
+    }
+
+    private Map<String, FeedGroup> listUserFeedGroups(Human found) {
+        Map<String, FeedGroup> categories = found.getCategories();
+        HashMap<String,FeedGroup> destination = Maps.<String, FeedGroup>newHashMap();
+        for (Map.Entry<String, FeedGroup> entry : categories.entrySet()) {
+            destination.put(entry.getKey(),mapper.map(entry.getValue(),FeedGroup.class));
+        }
+        return destination;
+    }
+
+    @Override
+    public Map<String, FeedGroup> addFeedGroup(Long userId, String feedGroupName) {
+        FeedGroup feedGroup = new FeedGroup();
+        Human human = humanRepository.findOne(userId);
+        feedGroupRepository.save(feedGroup);
+        human.getCategories().put(feedGroupName,feedGroup);
+        humanRepository.save(human);
+        return listUserFeedGroups(human);
+    }
+
     private void initializeHumanWithDefaultSettings( Human human ) {
 		FeedGroup defaultFeedGroup = new FeedGroup();
-		defaultFeedGroup.setName( "Default" );
-		defaultFeedGroup.setOwner( human );
 		String lentaUrl = "http://lenta.ru/rss";
 		feedService.listItems( lentaUrl, 0 );
 		defaultFeedGroup.setFeeds( newArrayList( feedRepository.findByUrl( lentaUrl ) ) );
 		feedGroupRepository.save( defaultFeedGroup );
-		ArrayList<FeedGroup> categories = newArrayList( defaultFeedGroup );
-		human.setCategories( categories );
+		Map<String,FeedGroup> map = newHashMap();
+        map.put("Default",defaultFeedGroup);
+		human.setCategories( map );
 		human = humanRepository.save( human );
 	}
 }

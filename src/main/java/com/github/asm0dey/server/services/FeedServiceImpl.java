@@ -1,10 +1,11 @@
 package com.github.asm0dey.server.services;
 
 import com.github.asm0dey.client.services.FeedService;
-import com.github.asm0dey.server.dao.repositories.FeedItemRepository;
-import com.github.asm0dey.server.dao.repositories.FeedRepository;
+import com.github.asm0dey.server.dao.repositories.*;
 import com.github.asm0dey.shared.domain.Feed;
 import com.github.asm0dey.shared.domain.FeedItem;
+import com.github.asm0dey.shared.domain.Human;
+import com.github.asm0dey.shared.domain.HumanFeedItem;
 import org.dozer.Mapper;
 import org.horrabin.horrorss.RssFeed;
 import org.horrabin.horrorss.RssItemBean;
@@ -48,6 +49,12 @@ public class FeedServiceImpl implements FeedService {
 	FeedItemRepository feedItemRepository;
 	@Autowired
 	Mapper mapper;
+	@Autowired
+	FeedGroupRepository feedGroupRepository;
+	@Autowired
+	HumanRepository humanRepository;
+	@Autowired
+	HumanFeedItemRepository humanFeedItemRepository;
 
 	private Feed generateFeedByURL( String url, RssParser parser ) throws Exception {
 		RssFeed load = parser.load();
@@ -122,10 +129,10 @@ public class FeedServiceImpl implements FeedService {
 					FeedItem feedItem = new FeedItem( rssItemBean.getPubDate(), rssItemBean.getDescription(), rssItemBean.getTitle(),
 							rssItemBean.getLink() );
 					feedItem.setAuthor( rssItemBean.getAuthor() );
-                    feedItem.setFeed(foundFeed);
-                    items.add(feedItem);
+					feedItem.setFeed( foundFeed );
+					items.add( feedItem );
 				}
-                items=feedItemRepository.save(items);
+				items = feedItemRepository.save( items );
 				return mapper.map( items, List.class );
 			} catch ( Exception e ) {
 				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
@@ -133,5 +140,58 @@ public class FeedServiceImpl implements FeedService {
 
 		}
 		return null;
+	}
+
+	@Transactional
+	@Override
+	public Map<String, Long> listFeeds( Long feedGroupId ) {
+		List<Feed> feeds = feedGroupRepository.listFeeds( feedGroupId );
+		Map<String, Long> map = newHashMap();
+		for ( Feed feed : feeds ) {
+			map.put( feed.getTitle(), feed.getId() );
+		}
+		return map;
+	}
+
+	@Override
+	public List<FeedItem> listUnreadFeedItems( Long feedId, Long humanId, final int pageNum ) {
+		List<FeedItem> feedItems = humanRepository.listUnreadItems( feedId, humanId, new Pageable() {
+			@Override
+			public int getPageNumber() {
+				return pageNum;
+			}
+
+			@Override
+			public int getPageSize() {
+				return 10;
+			}
+
+			@Override
+			public int getOffset() {
+				return getPageSize() * getPageNumber();
+			}
+
+			@Override
+			public Sort getSort() {
+				return null;
+			}
+		} );
+		return mapper.map( feedItems, List.class );
+	}
+
+	@Override
+	@Transactional( )
+	public void setItemRead( Long humanId, Long itemId ) {
+		Human foundHuman = humanRepository.findOne( humanId );
+		FeedItem foundItem = feedItemRepository.findOne( itemId );
+		HumanFeedItem humanFeedItem = humanFeedItemRepository.findByHumanAndFeedItem( foundHuman, foundItem );
+		if ( humanFeedItem == null ) {
+			humanFeedItem = new HumanFeedItem();
+			humanFeedItem.setHuman( foundHuman );
+			humanFeedItem.setFeedItem( foundItem );
+		}
+		if ( !humanFeedItem.isRead() )
+			humanFeedItem.setRead( true );
+		humanFeedItemRepository.save( humanFeedItem );
 	}
 }

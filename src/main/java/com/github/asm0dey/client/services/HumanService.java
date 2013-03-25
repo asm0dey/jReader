@@ -10,10 +10,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RemoteServiceRelativePath( "springGwtServices/humanService" )
 public interface HumanService extends RemoteService {
 	public Long createUser( Human human ) throws AuthenticationException, CreateUserException;
     public List<FeedItem> listAllFeedItems(Human human);
-    public Map<String,Long> listUserFeedGroups(Long userId);
+    public Map<String,Long> listUserFeedGroupIds(Long userId);
+    public Map<String,FeedGroup> listUserFeedGroups(Long userId);
+    public Map<String,FeedGroup> addFeedGroup(Long userId,String feedGroupName);
 }

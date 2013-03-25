@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: finkel
@@ -17,4 +18,7 @@ import java.util.List;
 @RemoteServiceRelativePath( "springGwtServices/feedService" )
 public interface FeedService extends RemoteService {
 	public List<FeedItem> listItems( String url,int pageNum );
+    public Map<String,Long> listFeeds(Long feedGroupId);
+    public List<FeedItem> listUnreadFeedItems(Long feedId,Long humanId,int pageNum);
+    public void setItemRead(Long humanId,Long itemId);
 }

@@ -1,11 +1,31 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+    <ui:with field="resources" type="com.github.asm0dey.client.resources.Images"/>
     <g:HTMLPanel>
+        <b:ResponsiveNavbar>
+            <!--<g:Image resource="{resources.logo}"/>-->
+            <b:Brand>jReader</b:Brand>
+            <b:Nav>
+                <b:NavLink ui:field="addCategoryNavLink" text="Add Category" icon="PLUS_SIGN" iconSize="SMALL"/>
+            </b:Nav>
+            <b:Nav alignment="RIGHT">
+                <b:NavLink text="Import OPML" ui:field="importLink" icon="UPLOAD" iconSize="SMALL" iconPosition="RIGHT"/>
+            </b:Nav>
+        </b:ResponsiveNavbar>
         <b:FluidContainer>
             <b:FluidRow height="100%">
                 <b:Column size="3">
+                    <g:HorizontalPanel ui:field="categoryPanel" visible="false">
+                        <b:TextBox placeholder="Category name" ui:field="categoryName"/>
+                        <b:Button type="PRIMARY" text="OK" ui:field="okCategoryButton"/>
+                    </g:HorizontalPanel>
                     <b:Accordion width="100%" ui:field="accordion"/>
+                </b:Column>
+                <b:Column size="9">
+                    <g:ScrollPanel ui:field="itemsScroller" >
+                        <g:VerticalPanel ui:field="itemsPanel" spacing="5" />
+                    </g:ScrollPanel>
                 </b:Column>
             </b:FluidRow>
         </b:FluidContainer>

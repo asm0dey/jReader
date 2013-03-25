@@ -4,9 +4,9 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd   http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
-    <context:annotation-config/>
 
-    <jpa:repositories base-package="com.github.asm0dey.server.dao.repositories"/>
+    <context:annotation-config/>
+    <jpa:repositories base-package="com.github.asm0dey.server.dao"/>
     <context:component-scan base-package="com.github.asm0dey.server"/>
     <bean class="org.dozer.DozerBeanMapper" id="mapper" scope="singleton">
         <property name="customFieldMapper" ref="hibernateCustomMapper"/>
@@ -16,9 +16,6 @@
     </bean>
     <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <!--<property name="dataSource" ref="dataSource"/>-->
     </bean>
-
-
 
 </beans>

@@ -76,7 +76,7 @@ public class FeedItem extends AbstractPojo {
 		this.author = author;
 	}
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     private Feed feed;
 
     public Feed getFeed() {

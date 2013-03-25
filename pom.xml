@@ -232,7 +232,7 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>net.sf</groupId>
@@ -264,7 +264,16 @@
             <artifactId>c3p0</artifactId>
             <version>0.9.1.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.simpleframework</groupId>
+            <artifactId>simple-xml</artifactId>
+            <version>2.7</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -293,6 +302,11 @@
                 <configuration>
                     <runTarget>gwtapp.html</runTarget>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
+                    <enableClosureCompiler>true</enableClosureCompiler>
+                    <!--<soycDetailed>true</soycDetailed>-->
+                    <!--<optimizationLevel>9</optimizationLevel>-->
+                    <style>obfuscated</style>
+                    <draftCompile>true</draftCompile>
                     <!--<i18nMessagesBundle>com.github.asm0dey.client.Messages</i18nMessagesBundle>-->
                 </configuration>
             </plugin>

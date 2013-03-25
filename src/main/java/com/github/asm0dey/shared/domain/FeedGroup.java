@@ -3,10 +3,7 @@ package com.github.asm0dey.shared.domain;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -19,18 +16,20 @@ import java.util.List;
 @javax.persistence.Entity
 @Table
 public class FeedGroup extends AbstractPojo {
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@Cascade( CascadeType.SAVE_UPDATE )
 	private List<Feed> feeds;
+/*
 	@Column( nullable = false )
 	private String name;
-	public String getName() {
+*/
+/*	public String getName() {
 		return name;
 	}
 
 	public void setName( String name ) {
 		this.name = name;
-	}
+	}*/
 
 	public List<Feed> getFeeds() {
 		return feeds;
@@ -40,15 +39,15 @@ public class FeedGroup extends AbstractPojo {
 		this.feeds = feeds;
 	}
 
-	public FeedGroup( List<Feed> feeds, String name ) {
+/*	public FeedGroup( List<Feed> feeds, String name ) {
 		this.feeds = feeds;
 		this.name = name;
-	}
+	}*/
 
 	public FeedGroup() {
 	}
 
-    @ManyToOne(optional = false)
+/*    @ManyToOne(optional = false)
     private Human owner;
 
     public Human getOwner() {
@@ -57,5 +56,5 @@ public class FeedGroup extends AbstractPojo {
 
     public void setOwner(Human owner) {
         this.owner = owner;
-    }
+    }*/
 }

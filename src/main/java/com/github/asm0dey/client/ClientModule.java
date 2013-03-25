@@ -1,7 +1,9 @@
 package com.github.asm0dey.client;
 
+import com.github.asm0dey.client.presenters.FeedItemPresenter;
 import com.github.asm0dey.client.presenters.LoginPagePresenter;
 import com.github.asm0dey.client.presenters.MainPagePresenter;
+import com.github.asm0dey.client.views.FeedItemViewImpl;
 import com.github.asm0dey.client.views.LoginPageViewImpl;
 import com.github.asm0dey.client.views.MainPageViewImpl;
 import com.gwtplatform.dispatch.client.gin.DispatchAsyncModule;
@@ -31,7 +33,7 @@ public class ClientModule extends AbstractPresenterModule {
 
 		bindPresenter( LoginPagePresenter.class, LoginPagePresenter.LoginPageView.class, LoginPageViewImpl.class,
 				LoginPagePresenter.LoginPageProxy.class );
-		bindPresenter( MainPagePresenter.class, MainPagePresenter.MainPageView.class, MainPageViewImpl.class, MainPagePresenter.MainPageProxy.class );
-
+		bindPresenter(MainPagePresenter.class, MainPagePresenter.MainPageView.class, MainPageViewImpl.class, MainPagePresenter.MainPageProxy.class);
+        bindPresenterWidget(FeedItemPresenter.class, FeedItemPresenter.FeedItemView.class, FeedItemViewImpl.class);
 	}
 }

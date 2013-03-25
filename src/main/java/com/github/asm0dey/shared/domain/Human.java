@@ -1,13 +1,12 @@
 package com.github.asm0dey.shared.domain;
 
-import com.google.common.collect.Lists;
-import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Table;
 import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.Map;
 
 /**
  * Human: finkel
@@ -26,28 +25,27 @@ public class Human extends AbstractPojo {
 	@Column( nullable = false )
 	private boolean isActive;
 	private int loginAttempts;
-	@OneToMany( orphanRemoval = true, mappedBy = "owner" )
+	@OneToMany( orphanRemoval = true/*, mappedBy = "owner"*/, fetch = FetchType.EAGER )
 	@Column( nullable = false )
 	@Cascade( value = { CascadeType.SAVE_UPDATE } )
-	private List<FeedGroup> categories;
-	@ManyToMany
-	private List<FeedItem> readItems;
-	@ManyToMany
-	private List<FeedItem> starredItems;
+// @MapKey(name = "name")
+	private Map<String, FeedGroup> categories;
+
 
 	public Human( String email, String passwordHash ) {
-		this( email, passwordHash, newArrayList( new FeedGroup( Lists.<Feed> newArrayList(), "Default" ) ) );
+		this.email = email;
+		this.passwordHash = passwordHash;
 	}
 
-	public Human( String email, String passwordHash, List<FeedGroup> categories ) {
+	public Human( String email, String passwordHash, Map<String, FeedGroup> categories ) {
 		this( email, passwordHash, true, categories );
 	}
 
-	public Human( String email, String passwordHash, boolean active, List<FeedGroup> categories ) {
+	public Human( String email, String passwordHash, boolean active, Map<String, FeedGroup> categories ) {
 		this( email, passwordHash, active, 0, categories );
 	}
 
-	public Human( String email, String passwordHash, boolean active, int loginAttempts, List<FeedGroup> categories ) {
+	public Human( String email, String passwordHash, boolean active, int loginAttempts, Map<String, FeedGroup> categories ) {
 		this.email = email;
 		this.passwordHash = passwordHash;
 		isActive = active;
@@ -94,28 +92,11 @@ public class Human extends AbstractPojo {
 		return this;
 	}
 
-	public List<FeedGroup> getCategories() {
+	public Map<String, FeedGroup> getCategories() {
 		return categories;
 	}
 
-	public Human setCategories( List<FeedGroup> subscribedFeeds ) {
-		this.categories = subscribedFeeds;
-		return this;
-	}
-
-	public List<FeedItem> getReadItems() {
-		return readItems;
-	}
-
-	public void setReadItems( List<FeedItem> readItems ) {
-		this.readItems = readItems;
-	}
-
-	public List<FeedItem> getStarredItems() {
-		return starredItems;
-	}
-
-	public void setStarredItems( List<FeedItem> starredItems ) {
-		this.starredItems = starredItems;
+	public void setCategories( Map<String, FeedGroup> categories ) {
+		this.categories = categories;
 	}
 }

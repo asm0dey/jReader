@@ -21,7 +21,7 @@ public class Feed extends AbstractPojo {
 	@Column( nullable = false )
 	private String url;
 	private Date lastUpdateDate;
-	@OneToMany(mappedBy = "feed",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "feed",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<FeedItem> items;
 	private String title;
 	private String charset;

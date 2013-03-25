@@ -1,16 +1,26 @@
 package com.github.asm0dey.client.views;
 
 import com.github.asm0dey.client.presenters.MainPagePresenter;
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
-import com.github.gwtbootstrap.client.ui.event.ShowEvent;
-import com.github.gwtbootstrap.client.ui.event.ShowHandler;
+import com.github.asm0dey.client.presenters.MainPageUiHandlers;
+import com.github.asm0dey.shared.domain.Feed;
+import com.github.asm0dey.shared.domain.FeedGroup;
+import com.github.gwtbootstrap.client.ui.*;
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Label;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 
 import java.util.Map;
+
+import static com.github.asm0dey.client.presenters.MainPagePresenter.SLOT_feedItemsSlot;
+import static com.google.gwt.dom.client.Style.Cursor.POINTER;
 
 /**
  * User: finkel
@@ -23,6 +33,25 @@ public class MainPageViewImpl extends ViewWithUiHandlers<MainPageUiHandlers> imp
 	private static MainPageViewImplUiBinder ourUiBinder = GWT.create( MainPageViewImplUiBinder.class );
 	@UiField
 	com.github.gwtbootstrap.client.ui.Accordion accordion;
+	/*
+		@UiField
+		Button addCategoryButton;
+	*/
+	@UiField
+	HorizontalPanel categoryPanel;
+	@UiField
+	Button okCategoryButton;
+	@UiField
+	TextBox categoryName;
+	@UiField
+	NavLink addCategoryNavLink;
+	@UiField
+	NavLink importLink;
+	@UiField
+	ScrollPanel itemsScroller;
+	@UiField
+	VerticalPanel itemsPanel;
+	boolean categoryPanelVisible = false;
 
 	public MainPageViewImpl() {
 		HTMLPanel rootElement = ourUiBinder.createAndBindUi( this );
@@ -30,21 +59,71 @@ public class MainPageViewImpl extends ViewWithUiHandlers<MainPageUiHandlers> imp
 	}
 
 	@Override
-	public void handleFeedGroups( Map<String, Long> result ) {
-		for ( final Map.Entry<String, Long> stringLongEntry : result.entrySet() ) {
+	public void handleFeedGroups( Map<String, FeedGroup> result ) {
+		accordion.clear();
+		for ( Map.Entry<String, FeedGroup> stringFeedGroupEntry : result.entrySet() ) {
 			AccordionGroup accordionGroup = new AccordionGroup();
-			accordionGroup.setHeading( stringLongEntry.getKey() );
-			accordionGroup.addShowHandler( new ShowHandler() {
-				@Override
-				public void onShow( ShowEvent showEvent ) {
-					getUiHandlers().loadFeeds( stringLongEntry.getValue() );
-				}
-			} );
+			accordionGroup.setHeading( stringFeedGroupEntry.getKey() );
+			FeedGroup value = stringFeedGroupEntry.getValue();
+			for ( final Feed feed : value.getFeeds() ) {
+				Label feedLabel = new Label( feed.getTitle() );
+				feedLabel.addClickHandler( new ClickHandler() {
+					@Override
+					public void onClick( ClickEvent event ) {
+						getUiHandlers().fetchItems( feed.getId() );
+					}
+				} );
+				feedLabel.getElement().getStyle().setCursor( POINTER );
+				accordionGroup.add( feedLabel );
+			}
 			accordion.add( accordionGroup );
 		}
 	}
 
-	interface MainPageViewImplUiBinder extends UiBinder<HTMLPanel, MainPageViewImpl> {
+	@UiHandler( { "okCategoryButton", "addCategoryNavLink" } )
+	public void handleClick( ClickEvent event ) {
+		Object source = event.getSource();
+		if ( source == addCategoryNavLink ) {
+			final Modal modal = new Modal( true, true );
+			final TextBox textBox = new TextBox();
+			textBox.setPlaceholder( "Category Name:" );
+			modal.add( textBox );
+			ModalFooter modalFooter = new ModalFooter( new Button( "OK", new ClickHandler() {
+				@Override
+				public void onClick( ClickEvent event ) {
+					String value = textBox.getValue();
+					if ( value != null ) {
+						getUiHandlers().addCategory( value );
+						modal.hide();
+					}
+				}
+			} ) );
+			modal.add( modalFooter );
+			modal.show();
+		} else if ( source == okCategoryButton ) {
+			getUiHandlers().addCategory( categoryName.getValue() );
+			categoryPanel.setVisible( false );
+		}
 	}
 
+	@Override
+	public void addToSlot( Object slot, Widget content ) {
+		if ( slot == SLOT_feedItemsSlot ) {
+			itemsPanel.add( content );
+		} else
+			super.addToSlot( slot, content );
+	}
+
+	@Override
+	public void setInSlot( Object slot, Widget content ) {
+		if ( slot == SLOT_feedItemsSlot ) {
+			itemsPanel.clear();
+			if ( content != null )
+				addToSlot( slot, content );
+		} else
+			super.setInSlot( slot, content );
+	}
+
+	interface MainPageViewImplUiBinder extends UiBinder<HTMLPanel, MainPageViewImpl> {
+	}
 }
