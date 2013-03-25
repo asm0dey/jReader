@@ -6,7 +6,7 @@ import com.github.asm0dey.client.services.FeedServiceAsync;
 import com.github.asm0dey.client.services.HumanServiceAsync;
 import com.github.asm0dey.shared.domain.FeedGroup;
 import com.github.asm0dey.shared.domain.FeedItem;
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
+import com.github.gwtbootstrap.client.ui.*;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -43,6 +43,7 @@ public class MainPagePresenter extends Presenter<MainPagePresenter.MainPageView,
 	private Long userId;
 	private Map<AccordionGroup, Map<String, Long>> groupCache = newHashMap();
 	private int pageNum = 0;
+	private Map<String, FeedGroup> currentFeedGroups;
 
 	/**
 	 * Creates a {@link com.gwtplatform.mvp.client.Presenter} that uses automatic binding. This will only work when instantiating this object using
@@ -79,17 +80,7 @@ public class MainPagePresenter extends Presenter<MainPagePresenter.MainPageView,
 	 */
 	@Override
 	protected void onReveal() {
-		HumanServiceAsync.Util.getInstance().listUserFeedGroups( userId, new AsyncCallback<Map<String, FeedGroup>>() {
-			@Override
-			public void onFailure( Throwable caught ) {
-
-			}
-
-			@Override
-			public void onSuccess( Map<String, FeedGroup> result ) {
-				getView().handleFeedGroups( result );
-			}
-		} );
+		HumanServiceAsync.Util.getInstance().listUserFeedGroups( userId, new RefreshFeedsCallback() );
 		super.onReveal();
 	}
 
@@ -140,17 +131,7 @@ public class MainPagePresenter extends Presenter<MainPagePresenter.MainPageView,
 
 	@Override
 	public void addCategory( String value ) {
-		HumanServiceAsync.Util.getInstance().addFeedGroup( userId, value, new AsyncCallback<Map<String, FeedGroup>>() {
-			@Override
-			public void onFailure( Throwable caught ) {
-
-			}
-
-			@Override
-			public void onSuccess( Map<String, FeedGroup> result ) {
-				getView().handleFeedGroups( result );
-			}
-		} );
+		HumanServiceAsync.Util.getInstance().addFeedGroup( userId, value, new RefreshFeedsCallback() );
 	}
 
 	@Override
@@ -167,11 +148,41 @@ public class MainPagePresenter extends Presenter<MainPagePresenter.MainPageView,
 				for ( FeedItem item : result ) {
 					FeedItemPresenter feedItemPresenter = feedItemPresenterProvider.get();
 					feedItemPresenter.setSource( item );
-                    feedItemPresenter.setUid(userId);
+					feedItemPresenter.setUid( userId );
 					addToSlot( SLOT_feedItemsSlot, feedItemPresenter );
 				}
 			}
 		} );
+	}
+
+	@Override
+	public void addNewSubscription() {
+		final Modal modal = new Modal( true, true );
+		modal.setWidth( 400 );
+		final TextBox textBox = new TextBox();
+		textBox.setPlaceholder( "Subscription URL:" );
+		textBox.setWidth( "95%" );
+		modal.add( textBox );
+		final ListBox listBox = new ListBox( false );
+		for ( String s : currentFeedGroups.keySet() ) {
+			listBox.addItem( s );
+		}
+		listBox.setWidth( "95%" );
+		modal.add( listBox );
+		modal.setCloseVisible( true );
+		ModalFooter modalFooter = new ModalFooter( new Button( "OK", new ClickHandler() {
+			@Override
+			public void onClick( ClickEvent event ) {
+				addFeed( textBox.getValue(), listBox.getValue(), userId );
+				modal.hide();
+			}
+		} ) );
+		modal.add( modalFooter );
+		modal.show();
+	}
+
+	private void addFeed( String url, String groupName, Long userId ) {
+		HumanServiceAsync.Util.getInstance().addFeedToFeedGroup( url, groupName, userId, new RefreshFeedsCallback() );
 	}
 
 	private void addItemsToAccordionGroup( Map<String, Long> result, AccordionGroup accordionGroup ) {
@@ -196,7 +207,11 @@ public class MainPagePresenter extends Presenter<MainPagePresenter.MainPageView,
 	 */
 	@Override
 	protected void revealInParent() {
-        RevealRootContentEvent.fire( this, this );
+		RevealRootContentEvent.fire( this, this );
+	}
+
+	public void setCurrentFeedGroups( Map<String, FeedGroup> currentFeedGroups ) {
+		this.currentFeedGroups = currentFeedGroups;
 	}
 
 	@ProxyCodeSplit
@@ -208,5 +223,18 @@ public class MainPagePresenter extends Presenter<MainPagePresenter.MainPageView,
 	public interface MainPageView extends View, HasUiHandlers<MainPageUiHandlers> {
 
 		void handleFeedGroups( Map<String, FeedGroup> result );
+	}
+
+	private class RefreshFeedsCallback implements AsyncCallback<Map<String, FeedGroup>> {
+		@Override
+		public void onFailure( Throwable caught ) {
+
+		}
+
+		@Override
+		public void onSuccess( Map<String, FeedGroup> result ) {
+			setCurrentFeedGroups( result );
+			getView().handleFeedGroups( result );
+		}
 	}
 }

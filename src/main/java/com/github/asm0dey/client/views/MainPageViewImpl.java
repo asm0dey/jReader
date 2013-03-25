@@ -51,11 +51,41 @@ public class MainPageViewImpl extends ViewWithUiHandlers<MainPageUiHandlers> imp
 	ScrollPanel itemsScroller;
 	@UiField
 	VerticalPanel itemsPanel;
-	boolean categoryPanelVisible = false;
+	@UiField
+	NavLink addFeedNavLink;
 
 	public MainPageViewImpl() {
 		HTMLPanel rootElement = ourUiBinder.createAndBindUi( this );
 		initWidget( rootElement );
+		addCategoryNavLink.addClickHandler( new ClickHandler() {
+			@Override
+			public void onClick( ClickEvent event ) {
+				final Modal modal = new Modal( true, true );
+				final TextBox textBox = new TextBox();
+				textBox.setPlaceholder( "Category Name:" );
+				textBox.setWidth( "100%" );
+				modal.add( textBox );
+				modal.setWidth( 300 );
+				ModalFooter modalFooter = new ModalFooter( new Button( "OK", new ClickHandler() {
+					@Override
+					public void onClick( ClickEvent event ) {
+						String value = textBox.getValue();
+						if ( value != null ) {
+							getUiHandlers().addCategory( value );
+							modal.hide();
+						}
+					}
+				} ) );
+				modal.add( modalFooter );
+				modal.show();
+			}
+		} );
+        addFeedNavLink.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                getUiHandlers().addNewSubscription();
+            }
+        });
 	}
 
 	@Override
@@ -65,42 +95,26 @@ public class MainPageViewImpl extends ViewWithUiHandlers<MainPageUiHandlers> imp
 			AccordionGroup accordionGroup = new AccordionGroup();
 			accordionGroup.setHeading( stringFeedGroupEntry.getKey() );
 			FeedGroup value = stringFeedGroupEntry.getValue();
-			for ( final Feed feed : value.getFeeds() ) {
-				Label feedLabel = new Label( feed.getTitle() );
-				feedLabel.addClickHandler( new ClickHandler() {
-					@Override
-					public void onClick( ClickEvent event ) {
-						getUiHandlers().fetchItems( feed.getId() );
-					}
-				} );
-				feedLabel.getElement().getStyle().setCursor( POINTER );
-				accordionGroup.add( feedLabel );
-			}
+			if ( value.getFeeds() != null )
+				for ( final Feed feed : value.getFeeds() ) {
+					Label feedLabel = new Label( feed.getTitle() );
+					feedLabel.addClickHandler( new ClickHandler() {
+						@Override
+						public void onClick( ClickEvent event ) {
+							getUiHandlers().fetchItems( feed.getId() );
+						}
+					} );
+					feedLabel.getElement().getStyle().setCursor( POINTER );
+					accordionGroup.add( feedLabel );
+				}
 			accordion.add( accordionGroup );
 		}
 	}
 
-	@UiHandler( { "okCategoryButton", "addCategoryNavLink" } )
+	@UiHandler( { "okCategoryButton" } )
 	public void handleClick( ClickEvent event ) {
 		Object source = event.getSource();
-		if ( source == addCategoryNavLink ) {
-			final Modal modal = new Modal( true, true );
-			final TextBox textBox = new TextBox();
-			textBox.setPlaceholder( "Category Name:" );
-			modal.add( textBox );
-			ModalFooter modalFooter = new ModalFooter( new Button( "OK", new ClickHandler() {
-				@Override
-				public void onClick( ClickEvent event ) {
-					String value = textBox.getValue();
-					if ( value != null ) {
-						getUiHandlers().addCategory( value );
-						modal.hide();
-					}
-				}
-			} ) );
-			modal.add( modalFooter );
-			modal.show();
-		} else if ( source == okCategoryButton ) {
+		if ( source == okCategoryButton ) {
 			getUiHandlers().addCategory( categoryName.getValue() );
 			categoryPanel.setVisible( false );
 		}
@@ -126,4 +140,5 @@ public class MainPageViewImpl extends ViewWithUiHandlers<MainPageUiHandlers> imp
 
 	interface MainPageViewImplUiBinder extends UiBinder<HTMLPanel, MainPageViewImpl> {
 	}
+
 }

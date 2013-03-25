@@ -3,7 +3,6 @@ package com.github.asm0dey.client.views;
 import com.github.asm0dey.client.presenters.FeedItemPresenter;
 import com.github.asm0dey.client.presenters.FeedItemUiHandlers;
 import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -12,6 +11,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 
 import java.util.Date;
@@ -29,7 +29,7 @@ public class FeedItemViewImpl extends ViewWithUiHandlers<FeedItemUiHandlers> imp
 	@UiField
 	Label date;
 	@UiField
-	Paragraph content;
+	HTML content;
 	@UiField
 	HeadingElement header;
 	private boolean isRead = false;
@@ -41,6 +41,7 @@ public class FeedItemViewImpl extends ViewWithUiHandlers<FeedItemUiHandlers> imp
 			@Override
 			public void onFocus( FocusEvent event ) {
 				if ( !isRead ) {
+					isRead = true;
 					getUiHandlers().markRead();
 					rootElement.removeStyleName( "unread" );
 					rootElement.addStyleName( "read" );
@@ -61,7 +62,7 @@ public class FeedItemViewImpl extends ViewWithUiHandlers<FeedItemUiHandlers> imp
 
 	@Override
 	public void setText( String text ) {
-		content.setText( text );
+		content.setHTML( text );
 	}
 
 	interface FeedItemViewImplUiBinder extends UiBinder<FocusPanel, FeedItemViewImpl> {

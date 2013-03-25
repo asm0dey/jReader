@@ -6,9 +6,14 @@
         <b:ResponsiveNavbar>
             <!--<g:Image resource="{resources.logo}"/>-->
             <b:Brand>jReader</b:Brand>
+
             <b:Nav>
-                <b:NavLink ui:field="addCategoryNavLink" text="Add Category" icon="PLUS_SIGN" iconSize="SMALL"/>
+                <b:Dropdown text="Modify Subscriptions">
+                    <b:NavLink ui:field="addCategoryNavLink" text="Add Category" icon="PLUS_SIGN" iconSize="SMALL"/>
+                    <b:NavLink ui:field="addFeedNavLink" text="Add Subscription" icon="PLUS_SIGN_ALT" iconSize="SMALL"/>
+                </b:Dropdown>
             </b:Nav>
+
             <b:Nav alignment="RIGHT">
                 <b:NavLink text="Import OPML" ui:field="importLink" icon="UPLOAD" iconSize="SMALL" iconPosition="RIGHT"/>
             </b:Nav>
@@ -23,7 +28,7 @@
                     <b:Accordion width="100%" ui:field="accordion"/>
                 </b:Column>
                 <b:Column size="9">
-                    <g:ScrollPanel ui:field="itemsScroller" >
+                    <g:ScrollPanel ui:field="itemsScroller" height="100%">
                         <g:VerticalPanel ui:field="itemsPanel" spacing="5" />
                     </g:ScrollPanel>
                 </b:Column>

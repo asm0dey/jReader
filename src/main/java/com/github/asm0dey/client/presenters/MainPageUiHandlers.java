@@ -16,4 +16,6 @@ public interface MainPageUiHandlers extends UiHandlers{
     void addCategory(String value);
 
     void fetchItems(Long feedId);
+
+    void addNewSubscription();
 }

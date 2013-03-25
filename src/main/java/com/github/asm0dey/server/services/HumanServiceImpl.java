@@ -6,6 +6,7 @@ import com.github.asm0dey.server.dao.repositories.FeedRepository;
 import com.github.asm0dey.server.dao.repositories.HumanRepository;
 import com.github.asm0dey.shared.domain.Exception.AuthenticationException;
 import com.github.asm0dey.shared.domain.Exception.CreateUserException;
+import com.github.asm0dey.shared.domain.Feed;
 import com.github.asm0dey.shared.domain.FeedGroup;
 import com.github.asm0dey.shared.domain.FeedItem;
 import com.github.asm0dey.shared.domain.Human;
@@ -124,6 +125,22 @@ public class HumanServiceImpl implements HumanService {
         Human human = humanRepository.findOne(userId);
         feedGroupRepository.save(feedGroup);
         human.getCategories().put(feedGroupName,feedGroup);
+        humanRepository.save(human);
+        return listUserFeedGroups(human);
+    }
+
+    @Override
+    public Map<String, FeedGroup> addFeedToFeedGroup(String url, String groupName, Long userId) {
+        Human human = humanRepository.findOne(userId);
+        FeedGroup feedGroup = human.getCategories().get(groupName);
+        Feed feed = feedRepository.findByUrl(url);
+        if (feed==null){
+            feedService.listItems(url, 0);
+            feed=feedRepository.findByUrl(url);
+        }
+        feedGroup.getFeeds().add(feed);
+        feedGroupRepository.save(feedGroup);
+        human.getCategories().put(groupName,feedGroup);
         humanRepository.save(human);
         return listUserFeedGroups(human);
     }

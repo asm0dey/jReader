@@ -7,7 +7,7 @@
                 <h2 ui:field="header"></h2>
             </g:HTMLPanel>
             <b:Label ui:field="date"/>
-            <b:Paragraph ui:field="content"/>
+            <g:HTML ui:field="content"/>
         </g:VerticalPanel>
     </g:FocusPanel>
 </ui:UiBinder>
