@@ -1,11 +1,8 @@
 package com.github.asm0dey.shared.domain;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Human: finkel
@@ -21,7 +18,7 @@ public class Feed extends AbstractPojo {
 	@Column( nullable = false )
 	private String url;
 	private Date lastUpdateDate;
-	@OneToMany(mappedBy = "feed",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany( mappedBy = "feed", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
 	private Set<FeedItem> items;
 	private String title;
 	private String charset;
@@ -51,18 +48,18 @@ public class Feed extends AbstractPojo {
 		this.url = url;
 	}
 
-/*	public Collection<FeedGroup> getFeedGroups() {
-		return feedGroups;
-	}
+	/*	public Collection<FeedGroup> getFeedGroups() {
+			return feedGroups;
+		}
 
-	public void setFeedGroups( Collection<FeedGroup> feedGroups ) {
-		this.feedGroups = feedGroups;
-	}
+		public void setFeedGroups( Collection<FeedGroup> feedGroups ) {
+			this.feedGroups = feedGroups;
+		}
 
-	@Override
-	public String toString() {
-		return "Feed{" + "feedGroups=" + feedGroups + ", url='" + url + '\'' + ", lastUpdateDate=" + lastUpdateDate + ", id=" + getId() + '}';
-	}*/
+		@Override
+		public String toString() {
+			return "Feed{" + "feedGroups=" + feedGroups + ", url='" + url + '\'' + ", lastUpdateDate=" + lastUpdateDate + ", id=" + getId() + '}';
+		}*/
 
 	public Set<FeedItem> getItems() {
 		return items;
@@ -94,5 +91,28 @@ public class Feed extends AbstractPojo {
 
 	public void setImageUrl( String imageUrl ) {
 		this.imageUrl = imageUrl;
+	}
+
+	@Override
+	public boolean equals( Object o ) {
+		if ( this == o )
+			return true;
+		if ( !( o instanceof Feed ) )
+			return false;
+		if ( !super.equals( o ) )
+			return false;
+
+		Feed feed = (Feed) o;
+		if ( this.getId() != null || feed.getId() != null )
+			return super.equals( o );
+        return url.equals(feed.url);
+
+    }
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + url.hashCode();
+		return result;
 	}
 }

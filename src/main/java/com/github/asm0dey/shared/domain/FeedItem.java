@@ -75,7 +75,7 @@ public class FeedItem extends AbstractPojo {
 	public void setAuthor( String author ) {
 		this.author = author;
 	}
-
+    @Index(name = "fi_feed_index")
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     private Feed feed;
 

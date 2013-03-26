@@ -32,6 +32,8 @@ public class FeedItemViewImpl extends ViewWithUiHandlers<FeedItemUiHandlers> imp
 	HTML content;
 	@UiField
 	HeadingElement header;
+	@UiField
+	Label author;
 	private boolean isRead = false;
 
 	public FeedItemViewImpl() {
@@ -57,12 +59,29 @@ public class FeedItemViewImpl extends ViewWithUiHandlers<FeedItemUiHandlers> imp
 
 	@Override
 	public void setDate( Date createdOn ) {
-		date.setText( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ).format( createdOn ) );
+		date.setText( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( createdOn ) );
 	}
 
 	@Override
 	public void setText( String text ) {
 		content.setHTML( text );
+	}
+
+	@Override
+	public void setLink( String url ) {
+		if ( url != null && !"".equals( url ) ) {
+			String innerText = header.getInnerText();
+			innerText = "<a href=\"" + url + "\">" + innerText + "</a>";
+			header.setInnerText( innerText );
+		}
+	}
+
+	@Override
+	public void setAuthor( String author ) {
+		if ( author != null && !"".equals( author ) ) {
+			this.author.setVisible( true );
+			this.author.setText( author );
+		}
 	}
 
 	interface FeedItemViewImplUiBinder extends UiBinder<FocusPanel, FeedItemViewImpl> {

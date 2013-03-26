@@ -7,6 +7,8 @@ import com.github.asm0dey.shared.domain.FeedGroup;
 import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.event.HideEvent;
+import com.github.gwtbootstrap.client.ui.event.HideHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -84,6 +86,22 @@ public class MainPageViewImpl extends ViewWithUiHandlers<MainPageUiHandlers> imp
             @Override
             public void onClick(ClickEvent event) {
                 getUiHandlers().addNewSubscription();
+            }
+        });
+        importLink.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                final OPMLUploadModal opmlUploadModal = new OPMLUploadModal();
+                opmlUploadModal.show();
+                opmlUploadModal.addHideHandler(new HideHandler() {
+                    @Override
+                    public void onHide(HideEvent hideEvent) {
+                        String results = opmlUploadModal.getResults();
+                        if (results!=null&&!"".equals(results)&&!results.startsWith("<")){
+                            getUiHandlers().importOpml(results);
+                        }
+                    }
+                });
             }
         });
 	}

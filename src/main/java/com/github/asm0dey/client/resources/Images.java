@@ -12,4 +12,5 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface Images extends ClientBundle{
     @Source("logo.png") ImageResource logo();
+    @Source("ajax-loader.gif") ImageResource loader();
 }

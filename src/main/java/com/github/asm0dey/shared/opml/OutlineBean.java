@@ -1,7 +1,5 @@
-package com.github.asm0dey.server.dao.opml;
+package com.github.asm0dey.shared.opml;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -86,11 +84,6 @@ public class OutlineBean {
 
 	public void setOutlineBeans( List<OutlineBean> outlineBeans ) {
 		this.outlineBeans = outlineBeans;
-	}
-
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString( this, ToStringStyle.SHORT_PREFIX_STYLE );
 	}
 
 	public boolean isCategory() {

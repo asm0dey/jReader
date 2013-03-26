@@ -1,7 +1,5 @@
-package com.github.asm0dey.server.dao.opml;
+package com.github.asm0dey.shared.opml;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -16,10 +14,11 @@ import org.simpleframework.xml.Root;
 @Root( name = "opml" )
 public class OpmlBean {
 	@Element( name = "head" )
-    HeadBean head;
+	HeadBean head;
+	@Element( name = "body" )
+	BodyBean bodyBean;
 	@Attribute( name = "version" )
 	private String version;
-    @Element(name = "body") BodyBean bodyBean;
 
 	public String getVersion() {
 		return version;
@@ -33,12 +32,15 @@ public class OpmlBean {
 		return head;
 	}
 
-	public void setHead(HeadBean head ) {
+	public void setHead( HeadBean head ) {
 		this.head = head;
 	}
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    public BodyBean getBodyBean() {
+        return bodyBean;
+    }
+
+    public void setBodyBean(BodyBean bodyBean) {
+        this.bodyBean = bodyBean;
     }
 }

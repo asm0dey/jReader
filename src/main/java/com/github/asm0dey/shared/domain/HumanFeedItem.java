@@ -1,6 +1,11 @@
 package com.github.asm0dey.shared.domain;
 
-import javax.persistence.*;
+import org.hibernate.annotations.Index;
+
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * User: finkel
@@ -10,13 +15,19 @@ import javax.persistence.*;
  * Time: 20:40
  */
 @Entity
-@Table( name = "human_feeditem")
+@Table( name = "human_feeditem" ,uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"human_id","feeditem_id"},name = "hfi_unik")
+})
 public class HumanFeedItem extends AbstractPojo {
 	@ManyToOne
+	@Index( name = "hfi_h_ind" )
 	private Human human;
 	@ManyToOne
+	@Index( name = "hfi_f_ind" )
 	private FeedItem feedItem;
+	@Index( name = "hfi_r_ind" )
 	private boolean isRead;
+	@Index( name = "hfi_s_ind" )
 	private boolean isStarred;
 
 	public FeedItem getFeedItem() {

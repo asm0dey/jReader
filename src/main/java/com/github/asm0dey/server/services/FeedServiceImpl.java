@@ -23,6 +23,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -69,7 +70,7 @@ public class FeedServiceImpl implements FeedService {
 		return foundFeed;
 	}
 
-	private String detectEncoding( String url ) throws ParserConfigurationException, IOException, SAXException {
+	private String detectEncoding( String url ) throws IOException, ParserConfigurationException, SAXException {
 		InputStream inputStream = new BufferedInputStream( new URL( url ).openStream() );
 		Document parse = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse( inputStream );
 		try {
@@ -94,52 +95,7 @@ public class FeedServiceImpl implements FeedService {
 	@Transactional
 	@Override
 	public List<FeedItem> listItems( String url, final int pageNum ) {
-		Feed foundFeed = feedRepository.findByUrl( url );
-		if ( foundFeed != null ) {
-			List<FeedItem> items = feedItemRepository.findByFeed_IdOrderByCreatedOnDesc( foundFeed.getId(), new Pageable() {
-				@Override
-				public int getPageNumber() {
-					return pageNum; // To change body of implemented methods use File | Settings | File Templates.
-				}
-
-				@Override
-				public int getPageSize() {
-					return 30; // To change body of implemented methods use File | Settings | File Templates.
-				}
-
-				@Override
-				public int getOffset() {
-					return 0; // To change body of implemented methods use File | Settings | File Templates.
-				}
-
-				@Override
-				public Sort getSort() {
-					return null; // To change body of implemented methods use File | Settings | File Templates.
-				}
-			} );
-			return mapper.map( items, List.class );
-		} else {
-			try {
-				RssParser parser = getParser( url );
-				foundFeed = generateFeedByURL( url, parser );
-				List<FeedItem> items = newArrayList();
-				if ( foundFeed.getItems() == null )
-					foundFeed.setItems( newHashSet( items ) );
-				for ( RssItemBean rssItemBean : parser.load().getItems() ) {
-					FeedItem feedItem = new FeedItem( rssItemBean.getPubDate(), rssItemBean.getDescription(), rssItemBean.getTitle(),
-							rssItemBean.getLink() );
-					feedItem.setAuthor( rssItemBean.getAuthor() );
-					feedItem.setFeed( foundFeed );
-					items.add( feedItem );
-				}
-				items = feedItemRepository.save( items );
-				return mapper.map( items, List.class );
-			} catch ( Exception e ) {
-				e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
-			}
-
-		}
-		return null;
+        return loadFeedItems(url,pageNum,Integer.MAX_VALUE);
 	}
 
 	@Transactional
@@ -194,4 +150,53 @@ public class FeedServiceImpl implements FeedService {
 			humanFeedItem.setRead( true );
 		humanFeedItemRepository.save( humanFeedItem );
 	}
+
+    public List<FeedItem> loadFeedItems(String url, final int pageNumber, final int pageSize) {
+        Feed foundFeed = feedRepository.findByUrl( url );
+        if ( foundFeed != null ) {
+            List<FeedItem> items = feedItemRepository.findByFeed_IdOrderByCreatedOnDesc( foundFeed.getId(), new Pageable() {
+                @Override
+                public int getPageNumber() {
+                    return pageNumber; // To change body of implemented methods use File | Settings | File Templates.
+                }
+
+                @Override
+                public int getPageSize() {
+                    return pageSize; // To change body of implemented methods use File | Settings | File Templates.
+                }
+
+                @Override
+                public int getOffset() {
+                    return getPageNumber()*getPageSize(); // To change body of implemented methods use File | Settings | File Templates.
+                }
+
+                @Override
+                public Sort getSort() {
+                    return null; // To change body of implemented methods use File | Settings | File Templates.
+                }
+            } );
+            return mapper.map( items, List.class );
+        } else {
+            try {
+                RssParser parser = getParser( url );
+                foundFeed = generateFeedByURL( url, parser );
+                List<FeedItem> items = newArrayList();
+                if ( foundFeed.getItems() == null )
+                    foundFeed.setItems( newHashSet( items ) );
+                for ( RssItemBean rssItemBean : parser.load().getItems() ) {
+                    FeedItem feedItem = new FeedItem( rssItemBean.getPubDate(), rssItemBean.getDescription(), rssItemBean.getTitle(),
+                            rssItemBean.getLink() );
+                    feedItem.setAuthor( rssItemBean.getAuthor() );
+                    feedItem.setFeed( foundFeed );
+                    items.add( feedItem );
+                }
+                items = feedItemRepository.save( items );
+                return mapper.map( items, List.class );
+            } catch ( Exception e ) {
+                e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+            }
+
+        }
+        return null;
+    }
 }

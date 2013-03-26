@@ -4,9 +4,12 @@
     <g:FocusPanel styleName="feedItem" addStyleNames="unread">
         <g:VerticalPanel>
             <g:HTMLPanel>
-                <h2 ui:field="header"></h2>
+                <h2 ui:field="header"/>
             </g:HTMLPanel>
-            <b:Label ui:field="date"/>
+            <g:HorizontalPanel>
+                <b:Label ui:field="date"/>
+                <b:Label ui:field="author" visible="false"/>
+            </g:HorizontalPanel>
             <g:HTML ui:field="content"/>
         </g:VerticalPanel>
     </g:FocusPanel>

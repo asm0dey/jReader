@@ -20,4 +20,5 @@ public interface HumanService extends RemoteService {
     public Map<String,FeedGroup> listUserFeedGroups(Long userId);
     public Map<String,FeedGroup> addFeedGroup(Long userId,String feedGroupName);
     public Map<String,FeedGroup> addFeedToFeedGroup(String url,String groupName, Long userId);
+    public Map<String,FeedGroup> importOpml(String opml, Long userId);
 }

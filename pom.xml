@@ -60,6 +60,10 @@
             <id>gwtrepo.googlecode.com</id>
             <url>https://gwtrepo.googlecode.com/svn/repo/</url>
         </repository>
+        <repository>
+            <id>GWTProJSONSerializer</id>
+            <url>http://gwtprojsonserializer.googlecode.com/svn/repo/</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -273,6 +277,21 @@
             <groupId>org.simpleframework</groupId>
             <artifactId>simple-xml</artifactId>
             <version>2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.moxieapps.gwt</groupId>
+            <artifactId>uploader</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 

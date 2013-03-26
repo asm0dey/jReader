@@ -18,4 +18,6 @@ public interface MainPageUiHandlers extends UiHandlers{
     void fetchItems(Long feedId);
 
     void addNewSubscription();
+
+    void importOpml(String opml);
 }

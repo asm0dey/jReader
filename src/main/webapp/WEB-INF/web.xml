@@ -23,7 +23,14 @@
         <servlet-name>springGwtRemoteServiceServlet</servlet-name>
         <url-pattern>/gwtapp/springGwtServices/*</url-pattern>
     </servlet-mapping>
-
+    <servlet>
+        <servlet-name>myhttprequesthandler</servlet-name>
+        <servlet-class>com.github.asm0dey.server.services.OpmlUploadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>myhttprequesthandler</servlet-name>
+        <url-pattern>/gwtapp/upload</url-pattern>
+    </servlet-mapping>
 
     <!-- Default page to serve -->
     <welcome-file-list>

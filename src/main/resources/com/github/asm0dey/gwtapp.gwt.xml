@@ -7,6 +7,7 @@
     <inherits name="com.github.gwtbootstrap.Bootstrap" />
     <inherits name='com.gwtplatform.dispatch.Dispatch' />
     <inherits name='com.gwtplatform.mvp.Mvp' />
+    <inherits name="org.moxieapps.gwt.uploader.Uploader"/>
 
     <!-- We need the JUnit module in the main module,               -->
     <!-- otherwise eclipse complains (Google plugin bug?)           -->

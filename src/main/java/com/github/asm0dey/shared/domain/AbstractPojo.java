@@ -1,6 +1,7 @@
 package com.github.asm0dey.shared.domain;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
 
@@ -16,6 +17,7 @@ public abstract class AbstractPojo implements IsSerializable {
 	@Version
 	Short consistencyVersion;
 	@Id
+    @Index(name = "id_ind")
 	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	private Long id;
 

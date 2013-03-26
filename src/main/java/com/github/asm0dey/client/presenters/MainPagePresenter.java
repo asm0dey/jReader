@@ -181,7 +181,12 @@ public class MainPagePresenter extends Presenter<MainPagePresenter.MainPageView,
 		modal.show();
 	}
 
-	private void addFeed( String url, String groupName, Long userId ) {
+    @Override
+    public void importOpml(String opml) {
+        HumanServiceAsync.Util.getInstance().importOpml(opml,userId,new RefreshFeedsCallback());
+    }
+
+    private void addFeed( String url, String groupName, Long userId ) {
 		HumanServiceAsync.Util.getInstance().addFeedToFeedGroup( url, groupName, userId, new RefreshFeedsCallback() );
 	}
 
